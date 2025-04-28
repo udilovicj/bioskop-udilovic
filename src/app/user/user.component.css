@@ -560,7 +560,7 @@
 /* Main Profile Section */
 .profile-hero {
   background-color: #f8f9fa;
-  padding: 4rem 0;
+  padding: 12rem 0;
   min-height: calc(100vh - 80px);
   background-image: linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.05) 100%);
 }
@@ -1247,4 +1247,63 @@
   .stars-container .fa-star {
     font-size: 1.5rem;
   }
+}
+
+/* Edit Input */
+.edit-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #3a7bd5;
+  box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+}
+
+/* Edit Actions */
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.save-btn, .cancel-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #43a047;
+  transform: scale(1.1);
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #e53935;
+  transform: scale(1.1);
+}
+
+.save-btn i, .cancel-btn i {
+  font-size: 1rem;
 }

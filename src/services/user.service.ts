@@ -248,4 +248,17 @@ export class UserService {
         return false;
     }
 
+    static updateUser(updatedUser: UserModel): boolean {
+        const arr = this.retrieveUsers();
+        
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].email === localStorage.getItem('active')) {
+                arr[i] = updatedUser;
+                localStorage.setItem('users', JSON.stringify(arr));
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

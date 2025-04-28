@@ -9,9 +9,9 @@
           <span>Login</span>
           <i class="fa-solid fa-right-to-bracket login-icon"></i>
         </a>
-        <a class="navigation-link profile-button" routerLink="/user" *ngIf="service.getActiveUser()">
-          <i class="fa-solid fa-user-circle"></i>
-          <span>Profile</span>
+        <a class="navigation-link profile-button" routerLink="/user" *ngIf="service.getActiveUser() as user">
+          <span>{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
+          <span>{{ user.email }}</span>
         </a>
         <button class="navigation-link logout-button" *ngIf="service.getActiveUser()" (click)="doLogout()">
           <i class="fa-solid fa-sign-out-alt"></i>

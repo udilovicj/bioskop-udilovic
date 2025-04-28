@@ -37,6 +37,11 @@ export class UserComponent {
   public isUserInfoModalOpen: boolean = false;
   public isReviewModalOpen: boolean = false;
   
+  // Edit form data
+  public editField: string = '';
+  public editValue: string = '';
+  public isEditing: boolean = false;
+  
   // Review form data
   public selectedOrder: OrderModel | null = null;
   public reviewRating: number = 0;
@@ -119,29 +124,57 @@ export class UserComponent {
     }
   }
 
+  // Edit methods
+  startEdit(field: string, value: string) {
+    this.editField = field;
+    this.editValue = value;
+    this.isEditing = true;
+  }
+
+  saveEdit() {
+    if (!this.user || !this.editField) return;
+
+    // Update the user object
+    (this.user as any)[this.editField] = this.editValue;
+
+    // Update in UserService
+    UserService.updateUser(this.user);
+
+    // Reset edit state
+    this.isEditing = false;
+    this.editField = '';
+    this.editValue = '';
+  }
+
+  cancelEdit() {
+    this.isEditing = false;
+    this.editField = '';
+    this.editValue = '';
+  }
+
   // Action methods
   doChangeEmail() {
-    // Implement email change logic
+    this.startEdit('email', this.user?.email || '');
   }
 
   doChangePassword() {
-    // Implement password change logic
+    this.startEdit('password', '');
   }
 
   doChangeFirstName() {
-    // Implement first name change logic
+    this.startEdit('firstName', this.user?.firstName || '');
   }
 
   doChangeLastName() {
-    // Implement last name change logic
+    this.startEdit('lastName', this.user?.lastName || '');
   }
 
   doChangePhone() {
-    // Implement phone change logic
+    this.startEdit('phone', this.user?.phone || '');
   }
 
   doChangeAddress() {
-    // Implement address change logic
+    this.startEdit('address', this.user?.address || '');
   }
 
   doCancel(order: OrderModel) {

@@ -8,7 +8,7 @@ const client = axios.create({
     baseURL : 'https://movie.pequla.com/api',
     headers : {
         'Accept' : 'application/json',
-        'X-Client-Name' : 'MOVIEUNIVERSE' 
+        'X-Client-Name' : 'BIOSKOPUDILOVIC' 
     },
     validateStatus : (status : number) => {
         return status === 200
@@ -115,23 +115,20 @@ export class MovieService{
             return { data: cachedData };
         }
 
-        const response = await client.get('/movie/runtime');
+        const response = await client.get('/movie/runtimes');
         this.setCache(cacheKey, response.data);
         return response;
     }
     
     static async searchMovies(filters: any) {
-        // Create a cache key based on the filters
-        const filterKeys = Object.keys(filters).sort();
-        const filterString = filterKeys.map(key => `${key}=${filters[key]}`).join('_');
-        const cacheKey = `search_${filterString}`;
-        
+        const cacheKey = `search_${JSON.stringify(filters)}`;
         const cachedData = this.getFromCache(cacheKey);
+        
         if (cachedData) {
             return { data: cachedData };
         }
 
-        const response = await client.get('/movie', { params: filters });
+        const response = await client.post('/movie/search', filters);
         this.setCache(cacheKey, response.data);
         return response;
     }

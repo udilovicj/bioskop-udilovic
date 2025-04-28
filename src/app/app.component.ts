@@ -14,7 +14,7 @@ import { UserService } from '../services/user.service';
 })
 export class AppComponent {
   
-  title = 'movie-universe';
+  title = 'bioskop-udilovic';
 
   public service = UserService
 

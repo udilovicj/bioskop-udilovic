@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "movie-universe": {
+    "bioskop-udilovic": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/movie-universe",
+            "outputPath": "dist/bioskop-udilovic",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "movie-universe:build:production"
+              "buildTarget": "bioskop-udilovic:build:production"
             },
             "development": {
-              "buildTarget": "movie-universe:build:development"
+              "buildTarget": "bioskop-udilovic:build:development"
             }
           },
           "defaultConfiguration": "development",
