@@ -23,35 +23,35 @@
             
             <div class="filter-group filters">
                 <div class="filter-dropdown">
-                    <select [(ngModel)]="selectedGenre" class="filter-select">
+                    <select [(ngModel)]="selectedGenre" (ngModelChange)="onFilterChange()" class="filter-select">
                         <option [value]="null">Žanr</option>
                         <option *ngFor="let genre of genres" [value]="genre.genreId">{{ genre.name }}</option>
                     </select>
                 </div>
                 
                 <div class="filter-dropdown">
-                    <select [(ngModel)]="selectedDirector" class="filter-select">
+                    <select [(ngModel)]="selectedDirector" (ngModelChange)="onFilterChange()" class="filter-select">
                         <option [value]="null">Režiser</option>
                         <option *ngFor="let director of directors" [value]="director.directorId">{{ director.name }}</option>
                     </select>
                 </div>
                 
                 <div class="filter-dropdown">
-                    <select [(ngModel)]="selectedActor" class="filter-select">
+                    <select [(ngModel)]="selectedActor" (ngModelChange)="onFilterChange()" class="filter-select">
                         <option [value]="null">Glumac</option>
                         <option *ngFor="let actor of actors" [value]="actor.actorId">{{ actor.name }}</option>
                     </select>
                 </div>
                 
                 <div class="filter-dropdown">
-                    <select [(ngModel)]="selectedRuntime" class="filter-select">
+                    <select [(ngModel)]="selectedRuntime" (ngModelChange)="onFilterChange()" class="filter-select">
                         <option [value]="null">Trajanje</option>
                         <option *ngFor="let runtime of runtimes" [value]="runtime">{{ runtime }} min</option>
                     </select>
                 </div>
                 
                 <div class="filter-dropdown">
-                    <select class="filter-select" [(ngModel)]="minRating">
+                    <select class="filter-select" [(ngModel)]="minRating" (ngModelChange)="onFilterChange()">
                         <option [value]="null">Ocena</option>
                         <option *ngFor="let r of [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]" [value]="r">{{ r }}+ &#9733;</option>
                     </select>

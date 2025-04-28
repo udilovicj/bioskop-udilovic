@@ -68,6 +68,11 @@ export class MoviesComponent implements OnInit, OnDestroy {
     this.searchTerms.next(this.searchQuery);
   }
 
+  // Method to handle filter changes
+  onFilterChange() {
+    this.searchMovies();
+  }
+
   async loadFilters() {
     if (this.genres.length > 0) {
       // If filters are already loaded, don't reload
@@ -96,7 +101,7 @@ export class MoviesComponent implements OnInit, OnDestroy {
       if (this.isLoading) return;
       
       this.isLoading = true;
-      const response = await MovieService.getMovies(0, 20); // Increase page size to reduce pagination needs
+      const response = await MovieService.getMovies(0, 100); // Increase page size to get more movies
       
       if (response.data) {
         this.allMovies = response.data;
@@ -119,87 +124,73 @@ export class MoviesComponent implements OnInit, OnDestroy {
   }
 
   async searchMovies() {
-    // If all filters are empty, show all movies
-    if (!this.selectedGenre && 
-        !this.selectedDirector && 
-        !this.selectedActor && 
-        !this.selectedRuntime && 
-        !this.searchQuery && 
-        !this.minRating) {
-      this.movies = this.allMovies;
-      return;
-    }
-    
     try {
-      this.isLoading = true;
+      // Start with all movies
+      let filteredResults = [...this.allMovies];
       
-      // Prefer client-side filtering when possible to reduce API calls
-      if (this.allMovies.length > 0 && 
-          (!this.selectedGenre && !this.selectedDirector && !this.selectedActor && !this.selectedRuntime)) {
-        
-        // Filter locally instead of making API call
-        this.filteredMovies = [...this.allMovies];
-        
-        // Apply search filter locally if query is short
-        if (this.searchQuery && this.searchQuery.length < 3) {
-          const query = this.searchQuery.toLowerCase();
-          this.filteredMovies = this.filteredMovies.filter(movie => 
-            movie.title.toLowerCase().includes(query) || 
-            movie.originalTitle.toLowerCase().includes(query) ||
-            movie.shortDescription.toLowerCase().includes(query)
-          );
-        }
-        
-        // Apply rating filter locally
-        if (this.minRating) {
-          this.filteredMovies = this.filteredMovies.filter(movie => movie.rating >= this.minRating!);
-        }
-        
-        this.movies = this.filteredMovies;
-        this.isLoading = false;
-        return;
+      // Apply genre filter
+      if (this.selectedGenre !== null) {
+        const genreId = Number(this.selectedGenre);
+        filteredResults = filteredResults.filter(movie => 
+          movie.movieGenres && movie.movieGenres.some(mg => mg.genreId === genreId)
+        );
       }
       
-      // For more complex searches, use the API
-      if (this.selectedGenre || this.selectedDirector || this.selectedActor || this.selectedRuntime || 
-          (this.searchQuery && this.searchQuery.length >= 3)) {
-        
-        const filters: any = {};
-        if (this.selectedGenre) filters.genre = this.selectedGenre;
-        if (this.selectedDirector) filters.director = this.selectedDirector;
-        if (this.selectedActor) filters.actor = this.selectedActor;
-        if (this.selectedRuntime) filters.runtime = this.selectedRuntime;
-        if (this.searchQuery && this.searchQuery.length >= 3) filters.search = this.searchQuery;
-        
-        const response = await MovieService.searchMovies(filters);
-        this.filteredMovies = response.data || [];
-        
-        // Connect ratings from existing movies rather than regenerating
-        if (this.filteredMovies && this.filteredMovies.length > 0) {
-          this.filteredMovies.forEach(movie => {
-            const existingMovie = this.allMovies.find(m => m.movieId === movie.movieId);
-            if (existingMovie && existingMovie.rating) {
-              movie.rating = existingMovie.rating;
-            } else if (!movie.rating) {
-              movie.rating = Math.round((Math.random() * 4 + 1) * 10) / 10;
-            }
-          });
-        }
-      } else {
-        // If only rating filter is applied, filter locally
-        this.filteredMovies = [...this.allMovies];
+      // Apply director filter
+      if (this.selectedDirector !== null) {
+        const directorId = Number(this.selectedDirector);
+        filteredResults = filteredResults.filter(movie => 
+          movie.director && movie.director.directorId === directorId
+        );
       }
       
-      // Apply rating filter locally
-      if (this.minRating && this.filteredMovies) {
-        this.filteredMovies = this.filteredMovies.filter(movie => movie.rating >= this.minRating!);
+      // Apply actor filter
+      if (this.selectedActor !== null) {
+        const actorId = Number(this.selectedActor);
+        filteredResults = filteredResults.filter(movie => 
+          movie.movieActors && movie.movieActors.some(ma => ma.actorId === actorId)
+        );
       }
       
-      this.movies = this.filteredMovies;
+      // Apply runtime filter
+      if (this.selectedRuntime !== null) {
+        const runtime = Number(this.selectedRuntime);
+        filteredResults = filteredResults.filter(movie => movie.runTime === runtime);
+      }
+      
+      // Apply search query filter
+      if (this.searchQuery && this.searchQuery.trim() !== '') {
+        const query = this.searchQuery.toLowerCase().trim();
+        filteredResults = filteredResults.filter(movie => 
+          movie.title.toLowerCase().includes(query) || 
+          (movie.originalTitle && movie.originalTitle.toLowerCase().includes(query)) ||
+          (movie.shortDescription && movie.shortDescription.toLowerCase().includes(query))
+        );
+      }
+      
+      // Apply rating filter
+      if (this.minRating !== null) {
+        filteredResults = filteredResults.filter(movie => 
+          movie.rating && movie.rating >= Number(this.minRating)
+        );
+      }
+      
+      // Update movies list
+      this.movies = filteredResults;
+      
+      // Log for debugging
+      console.log('Filters applied:', {
+        genre: this.selectedGenre,
+        director: this.selectedDirector,
+        actor: this.selectedActor,
+        runtime: this.selectedRuntime,
+        search: this.searchQuery,
+        rating: this.minRating
+      });
+      console.log('Filtered movies count:', filteredResults.length);
+      
     } catch (error) {
-      console.error('Error searching movies:', error);
-    } finally {
-      this.isLoading = false;
+      console.error('Error filtering movies:', error);
     }
   }
 
